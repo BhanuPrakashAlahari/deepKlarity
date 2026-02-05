@@ -1,31 +1,72 @@
 import React, { useState } from 'react';
 
-const QuizCard = ({ question, index, isInteractive = false }) => {
+const QuizCard = ({ question, index, isInteractive = false, mode = 'study', submitted = false, onAnswer }) => {
     const [selectedOption, setSelectedOption] = useState(null);
-    const [showAnswer, setShowAnswer] = useState(!isInteractive);
+    const [isAnswered, setIsAnswered] = useState(false);
+
+    // Reset state when question changes or mode resets
+    React.useEffect(() => {
+        setSelectedOption(null);
+        setIsAnswered(false);
+    }, [question, mode]);
 
     const handleSelect = (option) => {
-        if (!isInteractive) return;
+        // Stop interaction if:
+        // 1. Not interactive
+        // 2. Already submitted (Test Mode)
+        // 3. Already answered (Study Mode - single guess allowed)
+        if (!isInteractive || submitted || (mode === 'study' && isAnswered)) return;
+
         setSelectedOption(option);
-        setShowAnswer(true);
+
+        // In Study Mode, lock it immediately.
+        if (mode === 'study') {
+            setIsAnswered(true);
+        }
+
+        const isCorrect = option === question.answer;
+        if (onAnswer) {
+            onAnswer(isCorrect);
+        }
     };
 
-    const getOptionClass = (option) => {
-        if (!showAnswer) {
-            return selectedOption === option
-                ? "bg-indigo-50 border-indigo-500"
-                : "hover:bg-gray-50 border-transparent";
+    // Determine when to show results (Green/Red colors & Explanation)
+    // Study Mode: Show immediately after user picks an option.
+    // Test Mode: Show ONLY after the global "submitted" prop is true.
+    const showResult = (mode === 'study' && isAnswered) || (mode === 'test' && submitted);
+
+    // Dynamic Styles based on state
+    const getOptionStyle = (option) => {
+        const baseStyle = {
+            padding: '1rem',
+            borderRadius: '0.5rem',
+            border: '1px solid var(--color-border)',
+            backgroundColor: 'white',
+            cursor: (!isInteractive || submitted || (mode === 'study' && isAnswered)) ? 'default' : 'pointer',
+            transition: 'all 0.2s ease'
+        };
+
+        if (!showResult) {
+            // Unanswered state (or Test Mode before submit)
+            // Show simple Blue selection if selected
+            if (selectedOption === option) {
+                return { ...baseStyle, borderColor: 'var(--color-primary)', backgroundColor: '#eef2ff' };
+            }
+            return baseStyle; // Neutral
         }
 
+        // Result state (Revealed)
         if (option === question.answer) {
-            return "bg-green-50 border-green-500 text-green-700";
+            // Always show correct answer in Green
+            return { ...baseStyle, borderColor: 'var(--color-success)', backgroundColor: '#f0fdf4' };
         }
-
         if (selectedOption === option && option !== question.answer) {
-            return "bg-red-50 border-red-500 text-red-700";
+            // Show User's Wrong Answer in Red
+            return { ...baseStyle, borderColor: 'var(--color-error)', backgroundColor: '#fef2f2' };
         }
 
-        return "opacity-50 border-transparent";
+        // Other unselected options fade out
+        return { ...baseStyle, opacity: 0.6 };
     };
 
     const difficultyColors = {
@@ -48,22 +89,11 @@ const QuizCard = ({ question, index, isInteractive = false }) => {
 
             <div style={{ display: 'grid', gap: '0.75rem' }}>
                 {question.options.map((option, idx) => (
+
                     <div
                         key={idx}
                         onClick={() => handleSelect(option)}
-                        style={{
-                            padding: '1rem',
-                            borderRadius: '0.5rem',
-                            border: '1px solid',
-                            borderColor: showAnswer
-                                ? (option === question.answer ? 'var(--color-success)' : (selectedOption === option ? 'var(--color-error)' : 'var(--color-border)'))
-                                : (selectedOption === option ? 'var(--color-primary)' : 'var(--color-border)'),
-                            backgroundColor: showAnswer
-                                ? (option === question.answer ? '#f0fdf4' : (selectedOption === option && selectedOption !== question.answer ? '#fef2f2' : 'white'))
-                                : (selectedOption === option ? '#eef2ff' : 'white'),
-                            cursor: isInteractive && !showAnswer ? 'pointer' : 'default',
-                            transition: 'all 0.2s ease'
-                        }}
+                        style={getOptionStyle(option)}
                     >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                             <div style={{
@@ -81,7 +111,8 @@ const QuizCard = ({ question, index, isInteractive = false }) => {
                 ))}
             </div>
 
-            {showAnswer && (
+
+            {showResult && (
                 <div className="animate-fade-in" style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--color-border)' }}>
                     <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', display: 'flex', gap: '0.5rem' }}>
                         <strong>Explanation:</strong>

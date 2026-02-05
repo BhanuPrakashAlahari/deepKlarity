@@ -45,6 +45,25 @@ const QuizGenerator = () => {
         }
     };
 
+
+    // Skeleton Loader Component
+    const SkeletonLoader = () => (
+        <div className="card" style={{ padding: '2rem', marginTop: '2rem' }}>
+            <div className="skeleton-pulse" style={{ height: '32px', width: '60%', margin: '0 auto 1rem auto', background: '#e2e8f0', borderRadius: '4px' }}></div>
+            <div className="skeleton-pulse" style={{ height: '16px', width: '80%', margin: '0 auto 2rem auto', background: '#e2e8f0', borderRadius: '4px' }}></div>
+
+            <div style={{ display: 'grid', gap: '1rem' }}>
+                {[1, 2, 3].map(i => (
+                    <div key={i} style={{ height: '120px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}></div>
+                ))}
+            </div>
+            <style>{`
+                @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+                .skeleton-pulse { animation: pulse 1.5s infinite ease-in-out; }
+            `}</style>
+        </div>
+    );
+
     return (
         <div className="animate-fade-in" style={{ maxWidth: '800px', margin: '0 auto' }}>
 
@@ -108,8 +127,10 @@ const QuizGenerator = () => {
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       `}</style>
 
+            {loading && <SkeletonLoader />}
+
             {/* Results Section */}
-            {quizData && (
+            {quizData && !loading && (
                 <QuizDisplay data={quizData} isInteractive={true} />
             )}
 

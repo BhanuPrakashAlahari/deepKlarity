@@ -1,10 +1,17 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from schemas import QuizRequest, QuizResponse
 from scraper import scrape_wikipedia
 from quiz_generator import generate_quiz_from_text
 import os
 from dotenv import load_dotenv
+import models
+from database import engine, get_db
+from sqlalchemy.orm import Session
+
+# Create Tables
+models.Base.metadata.create_all(bind=engine)
 
 load_dotenv()
 
@@ -24,7 +31,7 @@ def read_root():
     return {"status": "ok", "message": "WikiQuiz AI Backend is running"}
 
 @app.post("/generate-quiz", response_model=QuizResponse)
-def generate_quiz(request: QuizRequest):
+def generate_quiz(request: QuizRequest, db: Session = Depends(get_db)):
     if not request.url:
         raise HTTPException(status_code=400, detail="URL is required")
     
@@ -38,12 +45,55 @@ def generate_quiz(request: QuizRequest):
 
     # 2. Generate Quiz using Gemini
     try:
-        quiz_data = generate_quiz_from_text(scraped_data['title'], scraped_data['content'], request.url)
-        return quiz_data
+        quiz_data_json = generate_quiz_from_text(scraped_data['title'], scraped_data['content'], request.url)
+        
+        # 3. Store in Database
+        db_quiz = models.Quiz(
+            url=quiz_data_json['url'],
+            title=quiz_data_json['title'],
+            summary=quiz_data_json['summary'],
+            key_entities=quiz_data_json.get('key_entities'),
+            sections=quiz_data_json.get('sections'),
+            quiz_data=quiz_data_json.get('quiz'),
+            related_topics=quiz_data_json.get('related_topics')
+        )
+        db.add(db_quiz)
+        db.commit()
+        db.refresh(db_quiz)
+        
+        quiz_data_json['id'] = db_quiz.id
+        
+        return quiz_data_json
     except Exception as e:
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/history")
+def get_history(db: Session = Depends(get_db)):
+    """
+    Fetch all generated quizzes from history.
+    """
+    quizzes = db.query(models.Quiz).order_by(models.Quiz.created_at.desc()).all()
+    
+    # Format for frontend
+    history_list = []
+    for q in quizzes:
+        history_list.append({
+            "id": q.id,
+            "title": q.title,
+            "url": q.url,
+            "date": q.created_at.strftime("%Y-%m-%d"),
+            "questions_count": len(q.quiz_data) if q.quiz_data else 0,
+            
+            # Include full details for the 'Details' view
+            "summary": q.summary,
+            "key_entities": q.key_entities,
+            "sections": q.sections,
+            "quiz": q.quiz_data,
+            "related_topics": q.related_topics
+        })
+    return history_list
 
 if __name__ == "__main__":
     import uvicorn
