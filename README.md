@@ -4,7 +4,7 @@
 
 > **Current Status**: Frontend MVP (React + Vite) with Mock Data integration.
 
----
+--
 
 ## 🚀 Key Features
 
