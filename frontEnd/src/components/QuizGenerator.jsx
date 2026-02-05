@@ -22,11 +22,27 @@ const QuizGenerator = () => {
         setLoading(true);
         setQuizData(null);
 
-        // Simulate API call
-        setTimeout(() => {
-            setQuizData(MOCK_QUIZ_RESPONSE);
+        try {
+            const response = await fetch('http://localhost:8000/generate-quiz', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.detail || 'Failed to generate quiz');
+            }
+
+            const data = await response.json();
+            setQuizData(data);
+        } catch (err) {
+            setError(err.message || 'Something went wrong. Please try again.');
+        } finally {
             setLoading(false);
-        }, 2000); // 2 second delay for realism
+        }
     };
 
     return (

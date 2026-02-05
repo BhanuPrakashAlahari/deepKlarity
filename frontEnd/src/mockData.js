@@ -5,12 +5,12 @@ export const MOCK_QUIZ_RESPONSE = {
     title: "Alan Turing",
     summary: "A brief history of the father of modern computer science.",
     generated_at: new Date().toISOString(),
-    questions: [
+    quiz: [
         {
             id: 1,
             question: "Which machine did Alan Turing help decode during World War II?",
             options: ["The Enigma", "The Colossus", "The Lorenz", "The Sputnik"],
-            correct_answer: "The Enigma",
+            answer: "The Enigma",
             explanation: "Turing played a crucial role in cracking intercepted coded messages that enabled the Allies to defeat the Nazis in many crucial engagements.",
             difficulty: "easy"
         },
@@ -18,7 +18,7 @@ export const MOCK_QUIZ_RESPONSE = {
             id: 2,
             question: "What is the Turing Test designed to evaluate?",
             options: ["Computer Speed", "Machine Intelligence", "Memory Capacity", "Network Latency"],
-            correct_answer: "Machine Intelligence",
+            answer: "Machine Intelligence",
             explanation: "The Turing Test determines if a machine's ability to exhibit intelligent behavior is equivalent to, or indistinguishable from, that of a human.",
             difficulty: "medium"
         },
@@ -26,11 +26,17 @@ export const MOCK_QUIZ_RESPONSE = {
             id: 3,
             question: "In which year was Alan Turing prosecuted for homosexual acts?",
             options: ["1945", "1952", "1960", "1939"],
-            correct_answer: "1952",
+            answer: "1952",
             explanation: "He was prosecuted in 1952 for homosexual acts; the Labouchere Amendment of 1885 had mandated that 'gross indecency' was a criminal offence in the UK.",
             difficulty: "hard"
         }
     ],
+    sections: ["Early Life", "Cryptanalysis", "Legacy"],
+    key_entities: {
+        people: ["Alan Turing"],
+        organizations: ["Bletchley Park"],
+        locations: ["United Kingdom"]
+    },
     related_topics: [
         "Enigma machine",
         "Turing completeness",

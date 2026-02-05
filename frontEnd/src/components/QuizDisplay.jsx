@@ -13,8 +13,15 @@ const QuizDisplay = ({ data, isInteractive = false }) => {
                 <p style={{ color: 'var(--color-text-muted)' }}>{data.summary}</p>
             </div>
 
+            {/* New Sections Display */}
+            {data.sections && (
+                <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
+                    <strong>Sections covered:</strong> {data.sections.join(', ')}
+                </div>
+            )}
+
             <div style={{ display: 'grid', gap: '1rem', marginBottom: '2rem' }}>
-                {data.questions.map((q, idx) => (
+                {data.quiz && data.quiz.map((q, idx) => (
                     <QuizCard
                         key={q.id || idx}
                         question={q}

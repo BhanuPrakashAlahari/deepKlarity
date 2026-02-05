@@ -17,11 +17,11 @@ const QuizCard = ({ question, index, isInteractive = false }) => {
                 : "hover:bg-gray-50 border-transparent";
         }
 
-        if (option === question.correct_answer) {
+        if (option === question.answer) {
             return "bg-green-50 border-green-500 text-green-700";
         }
 
-        if (selectedOption === option && option !== question.correct_answer) {
+        if (selectedOption === option && option !== question.answer) {
             return "bg-red-50 border-red-500 text-red-700";
         }
 
@@ -56,10 +56,10 @@ const QuizCard = ({ question, index, isInteractive = false }) => {
                             borderRadius: '0.5rem',
                             border: '1px solid',
                             borderColor: showAnswer
-                                ? (option === question.correct_answer ? 'var(--color-success)' : (selectedOption === option ? 'var(--color-error)' : 'var(--color-border)'))
+                                ? (option === question.answer ? 'var(--color-success)' : (selectedOption === option ? 'var(--color-error)' : 'var(--color-border)'))
                                 : (selectedOption === option ? 'var(--color-primary)' : 'var(--color-border)'),
                             backgroundColor: showAnswer
-                                ? (option === question.correct_answer ? '#f0fdf4' : (selectedOption === option && selectedOption !== question.correct_answer ? '#fef2f2' : 'white'))
+                                ? (option === question.answer ? '#f0fdf4' : (selectedOption === option && selectedOption !== question.answer ? '#fef2f2' : 'white'))
                                 : (selectedOption === option ? '#eef2ff' : 'white'),
                             cursor: isInteractive && !showAnswer ? 'pointer' : 'default',
                             transition: 'all 0.2s ease'
