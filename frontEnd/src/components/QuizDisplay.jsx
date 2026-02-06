@@ -46,24 +46,26 @@ const QuizDisplay = ({ data, isInteractive = false }) => {
 
     return (
         <div className="animate-fade-in">
-            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                 <div></div>
 
                 {/* Mode Toggle & Score */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     {mode === 'test' && submitted && (
-                        <span style={{ fontWeight: 600, color: 'var(--color-primary)' }}>
+                        <span style={{ fontWeight: 700, color: 'white', background: 'var(--color-primary-gradient)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-glow)' }}>
                             Final Score: {score.correct} / {score.total}
                         </span>
                     )}
-                    <div style={{ display: 'flex', background: '#e2e8f0', borderRadius: '8px', padding: '4px' }}>
+                    <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--radius-lg)', padding: '4px', border: '1px solid var(--glass-border)' }}>
                         <button
                             onClick={() => setMode('study')}
                             style={{
-                                padding: '0.5rem 1rem', borderRadius: '6px', border: 'none', cursor: 'pointer',
-                                background: mode === 'study' ? 'white' : 'transparent',
-                                boxShadow: mode === 'study' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                                fontWeight: mode === 'study' ? 600 : 400
+                                padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer',
+                                background: mode === 'study' ? 'var(--color-surface)' : 'transparent',
+                                color: mode === 'study' ? 'white' : 'var(--color-text-muted)',
+                                boxShadow: mode === 'study' ? 'var(--shadow-sm)' : 'none',
+                                fontWeight: mode === 'study' ? 600 : 500,
+                                transition: 'all 0.2s'
                             }}
                         >
                             Study Mode
@@ -71,10 +73,12 @@ const QuizDisplay = ({ data, isInteractive = false }) => {
                         <button
                             onClick={() => setMode('test')}
                             style={{
-                                padding: '0.5rem 1rem', borderRadius: '6px', border: 'none', cursor: 'pointer',
-                                background: mode === 'test' ? 'white' : 'transparent',
-                                boxShadow: mode === 'test' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                                fontWeight: mode === 'test' ? 600 : 400
+                                padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer',
+                                background: mode === 'test' ? 'var(--color-surface)' : 'transparent',
+                                color: mode === 'test' ? 'white' : 'var(--color-text-muted)',
+                                boxShadow: mode === 'test' ? 'var(--shadow-sm)' : 'none',
+                                fontWeight: mode === 'test' ? 600 : 500,
+                                transition: 'all 0.2s'
                             }}
                         >
                             Take Quiz
@@ -83,21 +87,20 @@ const QuizDisplay = ({ data, isInteractive = false }) => {
                 </div>
             </div>
 
-            <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-                    Quiz: {data.title}
+            <div className="card" style={{ marginBottom: '2rem', textAlign: 'center', padding: '2rem', background: 'var(--color-surface)' }}>
+                <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '0.5rem', background: 'var(--color-primary-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                    {data.title}
                 </h2>
-                <p style={{ color: 'var(--color-text-muted)' }}>{data.summary}</p>
+                <p style={{ color: 'var(--color-text-muted)', lineHeight: '1.6' }}>{data.summary}</p>
+
+                {data.sections && (
+                    <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)', fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
+                        <strong>Sections covered:</strong> {data.sections.join(', ')}
+                    </div>
+                )}
             </div>
 
-            {/* New Sections Display */}
-            {data.sections && (
-                <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
-                    <strong>Sections covered:</strong> {data.sections.join(', ')}
-                </div>
-            )}
-
-            <div style={{ display: 'grid', gap: '1rem', marginBottom: '2rem' }}>
+            <div style={{ display: 'grid', gap: '1.5rem', marginBottom: '2rem' }}>
                 {data.quiz && data.quiz.map((q, idx) => (
                     <QuizCard
                         key={q.id || idx}
@@ -113,35 +116,38 @@ const QuizDisplay = ({ data, isInteractive = false }) => {
 
             {/* Submit Button for Test Mode */}
             {mode === 'test' && !submitted && (
-                <div style={{ textAlign: 'center', marginTop: '2rem', marginBottom: '2rem' }}>
+                <div style={{ textAlign: 'center', marginTop: '2rem', marginBottom: '3rem' }}>
                     <button
                         className="btn btn-primary"
                         onClick={handleSubmit}
-                        style={{ padding: '0.75rem 2rem', fontSize: '1.1rem' }}
+                        style={{ padding: '0.875rem 3rem', fontSize: '1.1rem' }}
                     >
                         Submit Quiz
                     </button>
                 </div>
             )}
 
-            <div className="card" style={{ padding: '1.5rem', background: '#f8fafc' }}>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '1rem' }}>
-                    Recommended Topics
+            <div className="card" style={{ padding: '1.5rem' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '1rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Explore Related Topics
                 </h3>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
                     {data.related_topics.map((topic, idx) => (
                         <span
                             key={idx}
                             style={{
-                                background: 'white',
-                                padding: '0.5rem 1rem',
+                                background: 'rgba(255, 255, 255, 0.05)',
+                                padding: '0.5rem 1.25rem',
                                 borderRadius: '2rem',
-                                border: '1px solid var(--color-border)',
+                                border: '1px solid var(--glass-border)',
                                 fontSize: '0.9rem',
-                                color: 'var(--color-primary)',
+                                color: 'white',
                                 fontWeight: 500,
-                                cursor: 'pointer' // interactive hint
+                                cursor: 'default',
+                                transition: 'all 0.2s'
                             }}
+                            onMouseOver={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)'; e.currentTarget.style.color = 'var(--color-primary)'; }}
+                            onMouseOut={(e) => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.color = 'white'; }}
                         >
                             {topic}
                         </span>

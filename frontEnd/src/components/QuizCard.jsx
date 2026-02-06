@@ -39,18 +39,24 @@ const QuizCard = ({ question, index, isInteractive = false, mode = 'study', subm
     const getOptionStyle = (option) => {
         const baseStyle = {
             padding: '1rem',
-            borderRadius: '0.5rem',
-            border: '1px solid var(--color-border)',
-            backgroundColor: 'white',
+            borderRadius: '0.75rem',
+            border: '1px solid var(--glass-border)',
+            backgroundColor: 'rgba(255,255,255,0.02)',
             cursor: (!isInteractive || submitted || (mode === 'study' && isAnswered)) ? 'default' : 'pointer',
-            transition: 'all 0.2s ease'
+            transition: 'all 0.2s ease',
+            color: 'var(--color-text-main)'
         };
 
         if (!showResult) {
             // Unanswered state (or Test Mode before submit)
             // Show simple Blue selection if selected
             if (selectedOption === option) {
-                return { ...baseStyle, borderColor: 'var(--color-primary)', backgroundColor: '#eef2ff' };
+                return {
+                    ...baseStyle,
+                    borderColor: 'var(--color-primary)',
+                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                    boxShadow: '0 0 0 1px var(--color-primary)'
+                };
             }
             return baseStyle; // Neutral
         }
@@ -58,15 +64,25 @@ const QuizCard = ({ question, index, isInteractive = false, mode = 'study', subm
         // Result state (Revealed)
         if (option === question.answer) {
             // Always show correct answer in Green
-            return { ...baseStyle, borderColor: 'var(--color-success)', backgroundColor: '#f0fdf4' };
+            return {
+                ...baseStyle,
+                borderColor: 'var(--color-success)',
+                backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                color: '#34d399'
+            };
         }
         if (selectedOption === option && option !== question.answer) {
             // Show User's Wrong Answer in Red
-            return { ...baseStyle, borderColor: 'var(--color-error)', backgroundColor: '#fef2f2' };
+            return {
+                ...baseStyle,
+                borderColor: 'var(--color-error)',
+                backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                color: '#f87171'
+            };
         }
 
         // Other unselected options fade out
-        return { ...baseStyle, opacity: 0.6 };
+        return { ...baseStyle, opacity: 0.5 };
     };
 
     const difficultyColors = {
@@ -76,10 +92,10 @@ const QuizCard = ({ question, index, isInteractive = false, mode = 'study', subm
     };
 
     return (
-        <div className="card" style={{ padding: '1.5rem', marginBottom: '1.5rem', borderLeft: '4px solid var(--color-primary)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--color-text-main)' }}>
-                    <span style={{ color: 'var(--color-primary)', marginRight: '0.5rem' }}>Q{index + 1}.</span>
+        <div className="card" style={{ padding: '1.5rem', marginBottom: '1.5rem', borderLeft: '4px solid var(--color-primary)', background: 'var(--color-surface)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'white', lineHeight: '1.5' }}>
+                    <span style={{ color: 'var(--color-primary)', marginRight: '0.75rem' }}>Q{index + 1}.</span>
                     {question.question}
                 </h3>
                 <span className={`badge ${difficultyColors[question.difficulty] || 'badge-medium'}`}>
@@ -95,17 +111,17 @@ const QuizCard = ({ question, index, isInteractive = false, mode = 'study', subm
                         onClick={() => handleSelect(option)}
                         style={getOptionStyle(option)}
                     >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                             <div style={{
-                                width: '24px', height: '24px', borderRadius: '50%',
+                                width: '28px', height: '28px', borderRadius: '8px',
                                 border: '1px solid currentColor',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                fontSize: '0.8rem', fontWeight: 600,
-                                color: 'inherit', opacity: 0.7
+                                fontSize: '0.85rem', fontWeight: 700,
+                                color: 'inherit', opacity: 0.9
                             }}>
                                 {String.fromCharCode(65 + idx)}
                             </div>
-                            <span style={{ fontSize: '0.95rem' }}>{option}</span>
+                            <span style={{ fontSize: '1rem' }}>{option}</span>
                         </div>
                     </div>
                 ))}
@@ -113,9 +129,9 @@ const QuizCard = ({ question, index, isInteractive = false, mode = 'study', subm
 
 
             {showResult && (
-                <div className="animate-fade-in" style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--color-border)' }}>
-                    <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', display: 'flex', gap: '0.5rem' }}>
-                        <strong>Explanation:</strong>
+                <div className="animate-fade-in" style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)' }}>
+                    <p style={{ fontSize: '0.95rem', color: 'var(--color-text-muted)', display: 'flex', gap: '0.5rem', lineHeight: '1.6' }}>
+                        <strong style={{ color: 'var(--color-secondary)' }}>Explanation:</strong>
                         <span>{question.explanation}</span>
                     </p>
                 </div>

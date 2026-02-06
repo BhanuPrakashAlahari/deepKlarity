@@ -24,15 +24,15 @@ const History = () => {
 
     return (
         <div className="animate-fade-in" style={{ maxWidth: '1000px', margin: '0 auto' }}>
-            <div className="card" style={{ overflow: 'hidden' }}>
-                <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--color-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>History</h2>
+            <div className="card">
+                <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: 'white' }}>History</h2>
                     <span style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>{historyData.length} Quizzes Generated</span>
                 </div>
 
                 <div style={{ overflowX: 'auto' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                        <thead style={{ background: '#f8fafc', color: 'var(--color-text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
+                        <thead style={{ background: 'rgba(255,255,255,0.02)', color: 'var(--color-text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
                             <tr>
                                 <th style={{ padding: '1rem' }}>Article Topic</th>
                                 <th style={{ padding: '1rem' }}>URL</th>
@@ -43,10 +43,10 @@ const History = () => {
                         </thead>
                         <tbody>
                             {historyData.map((item) => (
-                                <tr key={item.id} style={{ borderBottom: '1px solid var(--color-border)', transition: 'background 0.2s' }} className="hover:bg-gray-50">
-                                    <td style={{ padding: '1rem', fontWeight: 500 }}>{item.title}</td>
+                                <tr key={item.id} style={{ borderBottom: '1px solid var(--glass-border)', transition: 'background 0.2s' }}>
+                                    <td style={{ padding: '1rem', fontWeight: 500, color: 'white' }}>{item.title}</td>
                                     <td style={{ padding: '1rem', maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                        <a href={item.url} target="_blank" rel="noreferrer" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>
+                                        <a href={item.url} target="_blank" rel="noreferrer" style={{ color: 'var(--color-secondary)', textDecoration: 'none' }}>
                                             {item.url}
                                         </a>
                                     </td>
@@ -55,7 +55,7 @@ const History = () => {
                                     <td style={{ padding: '1rem', textAlign: 'right' }}>
                                         <button
                                             className="btn btn-outline"
-                                            style={{ padding: '0.5rem 1rem', fontSize: '0.85rem' }}
+                                            style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}
                                             onClick={() => setSelectedQuiz(item)}
                                         >
                                             Details
@@ -72,18 +72,19 @@ const History = () => {
             {selectedQuiz && (
                 <div style={{
                     position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-                    backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000
+                    backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000
                 }} onClick={() => setSelectedQuiz(null)}>
                     <div style={{
-                        backgroundColor: 'white', padding: '2rem', borderRadius: '12px',
+                        backgroundColor: '#1e293b', border: '1px solid var(--glass-border)', padding: '2rem', borderRadius: '16px',
                         width: '90%', maxWidth: '900px', maxHeight: '90vh', overflowY: 'auto',
-                        position: 'relative'
+                        position: 'relative', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
                     }} onClick={(e) => e.stopPropagation()}>
                         <button
                             onClick={() => setSelectedQuiz(null)}
                             style={{
                                 position: 'absolute', top: '1rem', right: '1rem',
-                                background: 'transparent', border: 'none', fontSize: '1.5rem', cursor: 'pointer'
+                                background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', width: '32px', height: '32px',
+                                fontSize: '1.2rem', cursor: 'pointer', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center'
                             }}
                         >
                             ×
@@ -95,5 +96,4 @@ const History = () => {
         </div>
     );
 };
-
 export default History;
