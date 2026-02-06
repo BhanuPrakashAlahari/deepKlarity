@@ -1,19 +1,18 @@
+
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from schemas import QuizRequest, QuizResponse
-from scraper import scrape_wikipedia
-from quiz_generator import generate_quiz_from_text
-import os
-from dotenv import load_dotenv
-import models
-from database import engine, get_db
+from app.schemas.quiz_schemas import QuizRequest, QuizResponse
+from app.services.scraper import scrape_wikipedia
+from app.services.quiz_generator import generate_quiz_from_text
+from app.models import quiz_models
+from app.core.database import engine, get_db
+from app.core.config import settings
 from sqlalchemy.orm import Session
 
 # Create Tables
-models.Base.metadata.create_all(bind=engine)
+quiz_models.Base.metadata.create_all(bind=engine)
 
-load_dotenv()
 
 app = FastAPI(title="WikiQuiz AI Backend")
 
@@ -48,7 +47,7 @@ def generate_quiz(request: QuizRequest, db: Session = Depends(get_db)):
         quiz_data_json = generate_quiz_from_text(scraped_data['title'], scraped_data['content'], request.url)
         
         # 3. Store in Database
-        db_quiz = models.Quiz(
+        db_quiz = quiz_models.Quiz(
             url=quiz_data_json['url'],
             title=quiz_data_json['title'],
             summary=quiz_data_json['summary'],
@@ -74,7 +73,7 @@ def get_history(db: Session = Depends(get_db)):
     """
     Fetch all generated quizzes from history.
     """
-    quizzes = db.query(models.Quiz).order_by(models.Quiz.created_at.desc()).all()
+    quizzes = db.query(quiz_models.Quiz).order_by(quiz_models.Quiz.created_at.desc()).all()
     
     # Format for frontend
     history_list = []

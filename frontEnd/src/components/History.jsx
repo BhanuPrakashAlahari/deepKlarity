@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MOCK_HISTORY, MOCK_QUIZ_RESPONSE } from '../mockData';
 import QuizDisplay from './QuizDisplay';
+import config from '../config';
 
 const History = () => {
     const [selectedQuiz, setSelectedQuiz] = useState(null);
@@ -11,7 +12,7 @@ const History = () => {
 
     // Fetch history from API on mount
     React.useEffect(() => {
-        fetch('http://localhost:8000/history')
+        fetch(`${config.API_URL}/history`)
             .then(res => res.json())
             .then(data => setHistoryData(data))
             .catch(err => {

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import QuizDisplay from './QuizDisplay';
 import { MOCK_QUIZ_RESPONSE } from '../mockData';
 
+import config from '../config';
+
 const QuizGenerator = () => {
     const [url, setUrl] = useState('');
     const [loading, setLoading] = useState(false);
@@ -23,7 +25,7 @@ const QuizGenerator = () => {
         setQuizData(null);
 
         try {
-            const response = await fetch('http://localhost:8000/generate-quiz', {
+            const response = await fetch(`${config.API_URL}/generate-quiz`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

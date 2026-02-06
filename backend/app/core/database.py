@@ -1,13 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
+from app.core.config import settings
 
 # Use environment variable or default to localhost
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost/wikiquiz")
+DATABASE_URL = settings.DATABASE_URL
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

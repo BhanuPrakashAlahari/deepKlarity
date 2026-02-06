@@ -4,14 +4,12 @@ import time
 from json_repair import repair_json
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
-from schemas import QuizResponse
-from dotenv import load_dotenv
-
-load_dotenv()
+from app.schemas.quiz_schemas import QuizResponse
+from app.core.config import settings
 
 # Initialize Gemini
 # Ensure you have GOOGLE_API_KEY in your .env file
-google_api_key = os.getenv("GOOGLE_API_KEY")
+google_api_key = settings.GOOGLE_API_KEY
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-flash-latest", 
