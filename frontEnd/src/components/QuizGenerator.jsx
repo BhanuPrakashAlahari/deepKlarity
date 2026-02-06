@@ -24,7 +24,18 @@ const QuizGenerator = () => {
         setLoading(true);
         setQuizData(null);
 
+        const cacheKey = `quiz_cache_${url.trim()}`;
+
         try {
+            // Check cache first
+            const cachedData = localStorage.getItem(cacheKey);
+            if (cachedData) {
+                // Simulate a small delay for better UX (optional, but feels nicer than instant flickering) or just set it
+                // User said "it should not take much time", so instant is good.
+                setQuizData(JSON.parse(cachedData));
+                return;
+            }
+
             const response = await fetch(`${config.API_URL}/generate-quiz`, {
                 method: 'POST',
                 headers: {
@@ -39,6 +50,14 @@ const QuizGenerator = () => {
             }
 
             const data = await response.json();
+
+            // Save to cache
+            try {
+                localStorage.setItem(cacheKey, JSON.stringify(data));
+            } catch (e) {
+                console.warn('Failed to save to cache', e);
+            }
+
             setQuizData(data);
         } catch (err) {
             setError(err.message || 'Something went wrong. Please try again.');
