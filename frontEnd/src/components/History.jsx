@@ -72,24 +72,41 @@ const History = () => {
             {selectedQuiz && (
                 <div style={{
                     position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-                    backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000
+                    backgroundColor: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)',
+                    display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000,
+                    padding: '1rem'
                 }} onClick={() => setSelectedQuiz(null)}>
-                    <div style={{
-                        backgroundColor: '#1e293b', border: '1px solid var(--glass-border)', padding: '2rem', borderRadius: '16px',
-                        width: '90%', maxWidth: '900px', maxHeight: '90vh', overflowY: 'auto',
-                        position: 'relative', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+                    <div className="glass-panel" style={{
+                        backgroundColor: '#1e293b',
+                        border: '1px solid var(--glass-border)',
+                        borderRadius: '16px',
+                        width: '100%', maxWidth: '800px', maxHeight: '85vh',
+                        display: 'flex', flexDirection: 'column',
+                        position: 'relative', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+                        overflow: 'hidden' // Hide overflow here, scroll content inside
                     }} onClick={(e) => e.stopPropagation()}>
-                        <button
-                            onClick={() => setSelectedQuiz(null)}
-                            style={{
-                                position: 'absolute', top: '1rem', right: '1rem',
-                                background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', width: '32px', height: '32px',
-                                fontSize: '1.2rem', cursor: 'pointer', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center'
-                            }}
-                        >
-                            ×
-                        </button>
-                        <QuizDisplay data={selectedQuiz} />
+
+                        {/* Modal Header */}
+                        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(15, 23, 42, 0.6)' }}>
+                            <h3 style={{ margin: 0, color: 'white', fontSize: '1.25rem' }}>Quiz Assessment</h3>
+                            <button
+                                onClick={() => setSelectedQuiz(null)}
+                                style={{
+                                    background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', width: '32px', height: '32px',
+                                    fontSize: '1.2rem', cursor: 'pointer', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    transition: 'background 0.2s'
+                                }}
+                                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.4)'}
+                                onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                            >
+                                ×
+                            </button>
+                        </div>
+
+                        {/* Modal Content - Scrollable */}
+                        <div style={{ padding: '2rem', overflowY: 'auto' }}>
+                            <QuizDisplay data={selectedQuiz} isInteractive={true} />
+                        </div>
                     </div>
                 </div>
             )}
