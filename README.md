@@ -1,140 +1,121 @@
 # WikiQuiz AI - Automated Quiz Generator
 
-WikiQuiz AI is a full-stack web application designed to automatically generate educational quizzes from any Wikipedia article. By leveraging Large Language Models (LLM) and web scraping technologies, the platform transforms unstructured text into structured, interactive assessments.
+WikiQuiz AI is a full-stack web application that automatically generates educational quizzes from any Wikipedia article. It leverages **Google Gemini AI** and **web scraping** to transform unstructured text into interactive, structured assessments with a premium, engaging UI.
 
-The system features a dual-mode interface:
-1. **Generator Core**: Scrapes Wikipedia articles, processes content via Google Gemini AI, and generates structured quizzes with varying difficulty levels.
-2. **History & Persistence**: Stores all generated quizzes in a PostgreSQL database, allowing users to review past content and track learning progress.
+## 🚀 Live Demo
 
-## Architecture Guidelines
+- **Frontend (Vercel)**: [Input your Vercel URL here]
+- **Backend (Render)**: [Input your Render URL here]
 
-The application follows a decoupled client-server architecture:
+## ✨ Key Features
 
-- **Frontend**: A React-based SPA (Single Page Application) optimized for performance and specialized interaction states (Study vs. Test modes).
-- **Backend API**: A FastAPI (Python) service handling business logic, web scraping, AI integration, and database orchestration.
-- **Database**: PostgreSQL relational database for structured data persistence.
+1.  **AI-Powered Generation**: Instantly creates 5-10 question quizzes from valid Wikipedia URLs.
+2.  **Smart Parsing**: Extracts key content, filters noise, and uses LLMs to generate meaningful questions, answers, and explanations.
+3.  **Adaptive Learning Modes**:
+    *   **Study Mode**: Instant feedback with explanations after every question.
+    *   **Test Mode**: Simulates a real exam; answers are hidden until submission, followed by a final score.
+4.  **History & Persistence**: All quizzes are saved in a PostgreSQL database, allowing users to revisit past topics.
+5.  **Premium UI/UX**:
+    *   Dark mode aesthetic with glassmorphism effects.
+    *   Smooth animations and transitions.
+    *   Responsive design for all devices.
 
-## Technology Stack
+## 🛠️ Technology Stack
 
 ### Backend
-- **Framework**: FastAPI (Python 3.9+)
-- **Database ORM**: SQLAlchemy
-- **Database**: PostgreSQL
-- **AI/LLM**: LangChain + Google Gemini Pro
-- **Scraping**: BeautifulSoup4
-- **Validation**: Pydantic
+- **Framework**: FastAPI (Python 3.13+)
+- **Database**: PostgreSQL (via SQLAlchemy)
+- **AI Integration**: LangChain + Google Gemini Pro (`gemini-1.5-flash`)
+- **Web Scraping**: BeautifulSoup4 + Requests
+- **Architecture**: Modular "Clean Architecture" (Controllers, Services, Repositories)
 
 ### Frontend
-- **Framework**: React.js (Vite)
-- **Styling**: Vanilla CSS (Scoped & Modular)
+- **Framework**: React.js 18 + Vite
+- **Styling**: Modern CSS3 (Variables, Glassmorphism, Animations)
 - **State Management**: React Hooks
+- **Icons**: Heroicons (SVG)
 
-## Functional Specifications
+## 🏗️ Architecture
 
-### 1. Quiz Generation Module
-- **Input**: Valid Wikipedia URL (e.g., `https://en.wikipedia.org/wiki/Quantum_computing`).
-- **Process**:
-  1. Validates the URL domain.
-  2. Extracts main content, stripping metadata and references.
-  3. Chunking logic to handle token limits.
-  4. Generates 5-10 multiple-choice questions via LLM.
-- **Output**: JSON payload containing questions, options, correct answers, explanations, and difficulty ratings.
+The application uses a decoupled client-server architecture:
+- **Frontend**: A React SPA that consumes the REST API. It handles routing, user interactions, and state management.
+- **Backend**: A FastAPI service that exposes endpoints for generation and retrieval. It manages the scrape -> generate -> store pipeline.
+- **Database**: A relational PostgreSQL database storing `quizzes` with JSON columns for flexible question retrieval.
 
-### 2. Interaction Modes
-- **Study Mode**: Real-time feedback. Users see the correct answer and explanation immediately after selection.
-- **Test Mode**: Simulation of an exam environment. Answers are hidden until final submission, followed by a scored result.
-
-### 3. Historical Data
-- All generated quizzes are automatically persisted.
-- Users can browse previous sessions, view metadata (title, URL, generation date), and retake quizzes.
-
-## Installation & Setup
+## 📦 Installation & Setup
 
 ### Prerequisites
-- Python 3.9 or higher
-- Node.js 16 or higher
+- Python 3.9+
+- Node.js 16+
 - PostgreSQL Database
-- Google AI API Key (Gemini)
+- Google AI API Key
 
 ### Backend Setup
 
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
+1.  **Clone the repository** and navigate to `backend`:
+    ```bash
+    cd backend
+    ```
 
-2. Create and activate a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # Windows: venv\Scripts\activate
-   ```
+2.  **Create virtual environment**:
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # Windows: venv\Scripts\activate
+    ```
 
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+3.  **Install dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-4. Configure environment variables:
-   Create a `.env` file in the `backend` directory:
-   ```ini
-   GOOGLE_API_KEY=your_gemini_api_key_here
-   DATABASE_URL=postgresql://user:password@localhost/wikiquiz
-   ```
+4.  **Environment Variables**:
+    Create `.env` in `backend/`:
+    ```ini
+    GOOGLE_API_KEY=your_gemini_key
+    DATABASE_URL=postgresql://user:pass@localhost/wikiquiz
+    ```
 
-5. Run the server:
-   ```bash
-   uvicorn main:app --reload --host 0.0.0.0 --port 8000
-   ```
-   The API will be available at `http://localhost:8000`. Swagger documentation is available at `/docs`.
+5.  **Run Server**:
+    ```bash
+    uvicorn app.main:app --reload
+    ```
 
 ### Frontend Setup
 
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontEnd
-   ```
+1.  Navigate to `frontEnd`:
+    ```bash
+    cd frontEnd
+    ```
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
 
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
-   The application will be accessible at `http://localhost:5173`.
+3.  **Environment Variables**:
+    Create `.env` in `frontEnd/`:
+    ```ini
+    VITE_API_URL=http://localhost:8000
+    ```
 
-## Database Schema
+4.  **Run Development Server**:
+    ```bash
+    npm run dev
+    ```
 
-The persistent storage is designed with a normalized relational schema:
+## 🚀 Deployment
 
-**Table: quizzes**
-- `id` (Primary Key, Integer)
-- `url` (String): Source URL of the article.
-- `title` (String): Parsed title of the Wikipedia page.
-- `summary` (Text): Brief abstract of the content.
-- `quiz_data` (JSON): The structural payload of questions and answers.
-- `created_at` (Timestamp): Record creation time.
+### Backend (Render)
+The backend is configured for deployment on Render.
+- **Build Command**: `pip install -r requirements.txt`
+- **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- **Environment Variables**: Add `DATABASE_URL` and `GOOGLE_API_KEY` in the dashboard.
 
-## API Documentation
+### Frontend (Vercel)
+The frontend is optimized for Vercel.
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- **Environment Variables**: Add `VITE_API_URL` pointing to your Render backend URL.
 
-### POST /generate-quiz
-Generates a new quiz from a URL.
-- **Payload**: `{"url": "string"}`
-- **Response**: Quiz Object (JSON)
-
-### GET /history
-Retrieves the list of previously generated quizzes.
-- **Response**: Array of Quiz Objects (Summary view)
-
-## Deployment
-
-For production deployment:
-1. **Backend**: Use Gunicorn as a process manager behind Nginx.
-2. **Frontend**: Build static assets using `npm run build` and serve via Nginx/Apache or S3/CloudFront.
-3. **Database**: Use a managed PostgreSQL instance (e.g., AWS RDS, DigitalOcean).
-
-## License
-
-Proprietary Software. All rights reserved.
+## 📄 License
+MIT License. Built for educational purposes.
